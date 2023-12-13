@@ -24,3 +24,6 @@
 /requirements.txt
 /docs/puppeteer_config.json
 /docs/mermaid.conf
+
+# Meson build's 3rd party libraries
+subprojects/*/
