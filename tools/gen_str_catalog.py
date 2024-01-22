@@ -14,10 +14,10 @@ xml_file = sys.argv[4]
 # cust_name = sys.argv[6]
 # bit_mask_files = sys.argv[7:]
 
-catalog_re = re.compile("^.+?(unsigned int catalog<(.+?)>\(\))\s*$")
+catalog_re = re.compile(r"^.+?(unsigned [^ ]+ catalog<(.+?)>\(\))\s*$")
 
 string_re = re.compile(
-    "message<\(logging::level\)(\d+), sc::undefined<sc::args<(.*)>, char, (.*)>\s*>"
+    r"message<\(logging::level\)(\d+), sc::undefined<sc::args<(.*)>, char, (.*)>\s*>"
 )
 
 string_id = 0
