@@ -27,11 +27,10 @@ main_sym = custom_target('main.undefined_symbols.txt',
     capture: true,
 )
 
-logger_stub_bin = custom_target('logger_stub.[cpp|xml]',
+logger_stub_bin = custom_target('logger_stub.[cpp|go]',
     output: [
         'logger_stub.cpp',
-        'logger_stub.json',
-        'logger_stub.xml',
+        'serial_monitor.go',
     ],
     input: [
         # There should be just one object file: main.o
@@ -40,8 +39,9 @@ logger_stub_bin = custom_target('logger_stub.[cpp|xml]',
     command: [
         python_exe,
         gen_str_catalog_py,
-        '@INPUT0@',
-        '@OUTPUT@',
+        '-i@INPUT0@',
+        '-c@OUTPUT0@',
+        '-m@OUTPUT1@',
     ],
     build_by_default: true,
 )
