@@ -1,3 +1,47 @@
+# Opinionated fork of compile-time-init for AVR projects
+
+Key changes:
+
+- Cross-compile the example projects with Meson build system;
+- Toolchain and 3rd party dependency management with Meson's WarpDB;
+- AVR chipset support
+- Compile-time logging support on 8-bit MCUs (`unsigned long -> unsigned 32-bit integer`)
+
+## Quick start
+
+1. Edit the path to the AVR gcc v12.0 toolchain in `avr-cross.ini`.
+
+2. Install the build system.
+
+```bash
+python3 -m pip install meson ninja
+```
+
+3. Resolve build dependencies, and setup the build directory.
+```bash
+meson setup --cross-file=avr-cross.ini --buildtype=release build/
+```
+
+4. Compile to ELF file (Linker script not required.)
+```bash
+ninja -C build/ all
+```
+
+5. (Optional): convert the ELF format to ihex format
+```bash
+ninja -C build/ hex
+```
+
+6. Upload the ihex file to Arduino UNO
+```bash
+ninja -C build/ flash
+```
+
+7. (Not yet implemented) Write a Python script `cib_serial_monitor.py` that
+   decodes the incoming streams from the serial port to formatted log messages.
+   With/without logging levels.
+
+---
 # *cib* - Compile-time Initialization and Build
 
 [![Contributor Covenant](https://img.shields.io/badge/Contributor%20Covenant-2.1-4baaaa.svg)](CODE_OF_CONDUCT.md)
