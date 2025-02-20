@@ -9,7 +9,8 @@
 
 #include <Arduino.h>
 
-template <uint8_t led_pin> struct blink {
+template <uint8_t led_pin, units::Microsecond<uint32_t> blink_interval>
+struct blink {
     static inline bool volatile is_interrupted = false;
 
     constexpr static auto set_pin =
@@ -18,8 +19,8 @@ template <uint8_t led_pin> struct blink {
     constexpr static auto config = cib::config(                        //
         cib::extend<RuntimeInit>(core_init::disable_usart >> set_pin), //
         cib::extend<OnTimerInterrupt>([]() {
-            constexpr auto duration_steps =
-                blink_interval_ms / timer_interrupt_internal_ms;
+            constexpr auto duration_steps = static_cast<uint32_t>(
+                blink_interval / timer[0].interrupt_interval);
             static uint8_t step = 0;
             static_assert(std::log2(duration_steps) <= sizeof(step) * 8,
                           "Need more than bits to implement delay()");

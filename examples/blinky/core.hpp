@@ -24,29 +24,28 @@ template <uint16_t factor> constexpr uint8_t prescalerRegisterValue() {
     }
 }
 
-constexpr uint32_t clock_frequency_kHz = 16'000;
-template <uint16_t prescaler_value, uint32_t time_interval_ms>
+template <uint16_t prescaler_value, units::Microsecond<uint32_t> time_interval>
 constexpr uint8_t overflowRegisterValue() {
-    constexpr uint32_t overflow_value =
-        clock_frequency_kHz * time_interval_ms / prescaler_value - 1;
+    constexpr auto overflow_value = static_cast<uint32_t>(
+        timer[0].freq * time_interval / prescaler_value - 1);
     static_assert(
         overflow_value < 255,
         "Overflow register value > 255; insufficient clock prescaler value?");
     return static_cast<uint8_t>(overflow_value);
 }
-static_assert(overflowRegisterValue<64, 1>() == 0xF9);
+static_assert(overflowRegisterValue<64, 1_ms>() == 0xF9);
 
-template <uint32_t clock_frequency_kHz> constexpr uint8_t clockPrescaler() {
-    constexpr auto oscillator_freq_kHz = 32'000UL;
-    constexpr auto division = oscillator_freq_kHz / clock_frequency_kHz;
+template <units::KiloHertz timer_freq> constexpr uint8_t clockPrescaler() {
+    constexpr auto division =
+        static_cast<uint32_t>(oscillator_freq / timer_freq);
 
     static_assert(division <= 256);
     static_assert(__builtin_popcount(division) == 1, "Must be power of two");
     return std::log2(division);
 }
-static_assert(clockPrescaler<16'000UL>() == 0x01);
-static_assert(clockPrescaler<8'000UL>() == 0x02);
-static_assert(clockPrescaler<4'000UL>() == 0x03);
+static_assert(clockPrescaler<16e3_kHz>() == 0x01);
+static_assert(clockPrescaler<8e3_kHz>() == 0x02);
+static_assert(clockPrescaler<4e3_kHz>() == 0x03);
 
 struct core_init {
     constexpr static auto clk_init = flow::action("ClkInit"_sc, []() {
@@ -55,7 +54,7 @@ struct core_init {
         CLKPR = 0x80;
 
         // With 4 clock cycles, update the clock division factor.
-        CLKPR = clockPrescaler<clock_frequency_kHz>();
+        CLKPR = clockPrescaler<timer[0].freq>();
         sei();
     });
     constexpr static auto timer0_init = flow::action("TimerInit"_sc, []() {
@@ -64,7 +63,7 @@ struct core_init {
         cli();
         TCCR0A = TCCR0A | (1 << WGM01); // Set the CTC mode
         OCR0A = overflowRegisterValue<
-            prescaler, timer_interrupt_internal_ms>(); // Set the value for 1ms
+            prescaler, timer[0].interrupt_interval>(); // Set the value for 1ms
         TIMSK0 = TIMSK0 | (1 << OCIE0A); // Set the interrupt request
         TCCR0B =
             TCCR0B |
