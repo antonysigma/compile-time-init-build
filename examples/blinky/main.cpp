@@ -22,7 +22,7 @@ struct project {
                         serial_init,                                      //
                         blink<13, 1'000_ms>,                              //
                         pwm_output<DigitalPin<9>, DigitalPin<10>, false>, //
-                        pwm_output<DigitalPin<11>, DigitalPin<3>, false>  //
+                        pwm_output<DigitalPin<11>, DigitalPin<3>, true>   //
                         >;
 };
 

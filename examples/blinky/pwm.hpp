@@ -20,18 +20,30 @@ template <class pin_a, class pin_b, bool phase_shift> struct pwm_output {
     constexpr static auto timer_id = pin_a::timer_id;
     constexpr static auto this_timer = timer[timer_id];
 
+    constexpr static void writeA(float duty_cycle) {
+        pin_a::ocr() = static_cast<uint8_t>(round(resolution * duty_cycle));
+    }
+
+    constexpr static void writeB(float duty_cycle) {
+        // Inversion of +ve duty cycle is simply the -ve duty cycle.
+        pin_b::ocr() =
+            static_cast<uint8_t>(round(resolution * (1 - duty_cycle)));
+    }
+
     constexpr static auto setup_pwm = flow::action("SetupPWM"_sc, []() {
         static_assert(pin_a::timer_id == pin_b::timer_id);
 
-        pin_a::ocr() = static_cast<uint8_t>(round(resolution * 0.1f));
-        pin_b::ocr() = static_cast<uint8_t>(round(resolution * 0.4f));
+        writeA(0.1f);
+        writeB(0.4f);
     });
 
     constexpr static auto set_pin = flow::action("set_pin"_sc, []() {
         static_assert(this_timer.usage == Timer::PHASE_CORRECT_PWM);
         constexpr auto prescaler = static_cast<uint16_t>(
             round(oscillator_freq / this_timer.freq / 4 / resolution));
-        constexpr auto non_inverting = 0b1010;
+
+        // Non-inverting on OCRA, inverting on OCRB.
+        constexpr auto non_inverting = 0b1011;
 
         // Set the pin to digital output
         pin_a::port() = pin_a::port() | pin_a::mask;
@@ -49,17 +61,17 @@ template <class pin_a, class pin_b, bool phase_shift> struct pwm_output {
 
         if constexpr (phase_shift) {
             if constexpr (timer_id == 1) {
+                // 90-deg phase shift
                 static_assert(resolution <= 255);
-                TCNT1L = resolution;
+                TCNT1L = resolution / 2;
             } else {
-                TCNT2 = resolution;
+                TCNT2 = resolution / 2;
             }
         }
     });
 
     constexpr static auto config = cib::config( //
         cib::extend<RuntimeInit>(core_init::disable_irq >> set_pin >>
-                                 setup_pwm >> core_init::enable_irq), //
-        cib::extend<MainLoop>([]() {})                                //
+                                 setup_pwm >> core_init::enable_irq) //
     );
 };
