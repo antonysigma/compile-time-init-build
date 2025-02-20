@@ -48,19 +48,19 @@ static_assert(clockPrescaler<8e3_kHz>() == 0x02);
 static_assert(clockPrescaler<4e3_kHz>() == 0x03);
 
 struct core_init {
+    constexpr static auto disable_irq =
+        flow::action("DisableInterrupts"_sc, []() { cli(); });
+
     constexpr static auto clk_init = flow::action("ClkInit"_sc, []() {
-        cli();
         // Enable clock prescaler pin change.
         CLKPR = 0x80;
 
         // With 4 clock cycles, update the clock division factor.
         CLKPR = clockPrescaler<timer[0].freq>();
-        sei();
     });
     constexpr static auto timer0_init = flow::action("TimerInit"_sc, []() {
         constexpr auto prescaler = 1024UL;
 
-        cli();
         TCCR0A = TCCR0A | (1 << WGM01); // Set the CTC mode
         OCR0A = overflowRegisterValue<
             prescaler, timer[0].interrupt_interval>(); // Set the value for 1ms
@@ -68,8 +68,10 @@ struct core_init {
         TCCR0B =
             TCCR0B |
             prescalerRegisterValue<prescaler>(); // Set the prescale 1/64 clock
-        sei();                                   // Enable interrupt
     });
+
+    constexpr static auto enable_irq =
+        flow::action("EnableInterrupts"_sc, []() { sei(); });
 
     constexpr static auto disable_usart = flow::action("DisableUSART"_sc, []() {
 #if defined(UCSRB)
@@ -79,6 +81,6 @@ struct core_init {
 #endif
     });
 
-    constexpr static auto config = cib::config(
-        cib::extend<RuntimeInit>(clk_init >> timer0_init >> disable_usart));
+    constexpr static auto config = cib::config(cib::extend<RuntimeInit>(
+        disable_irq >> clk_init >> timer0_init >> enable_irq >> disable_usart));
 };

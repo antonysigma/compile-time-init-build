@@ -16,13 +16,14 @@ struct registered_interfaces {
 };
 
 struct project {
-    constexpr static auto config =
-        cib::components<registered_interfaces,                            //
-                        core_init,                                        //
-                        serial_init,                                      //
-                        blink<13, 1'000_ms>,                              //
-                        pwm_output<digital_pin_t::D9, digital_pin_t::D10> //
-                        >;
+    constexpr static auto config = cib::components<
+        registered_interfaces,                                    //
+        core_init,                                                //
+        serial_init,                                              //
+        blink<13, 1'000_ms>,                                      //
+        pwm_output<digital_pin_t::D9, digital_pin_t::D10, false>, //
+        pwm_output<digital_pin_t::D11, digital_pin_t::D3, true>   //
+        >;
 };
 
 cib::nexus<project> nexus{};
