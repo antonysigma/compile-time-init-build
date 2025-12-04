@@ -1,14 +1,12 @@
 #pragma once
+#include <Arduino.h>
+
 #include <cmath>
 
 #include "config.hpp"
 #include "core.hpp"
 #include "interfaces.hpp"
-
-#include <cib/cib.hpp>
-#include <log/log.hpp>
-
-#include <Arduino.h>
+#include "log_over_uart.hpp"
 
 /** Hand roll our own std::max to bypass the C-macro max() from Arduino.h */
 template<typename T>
@@ -17,6 +15,8 @@ Max(const T a, const T b) {
     return a >= b ? a : b;
 }
 
+namespace {
+CIB_LOG_ENV(logging::binary::get_builder, serial_logger::builder{});
 template <uint8_t led_pin> struct blink {
     static inline bool volatile is_interrupted = false;
 
@@ -49,8 +49,10 @@ template <uint8_t led_pin> struct blink {
 
             is_interrupted = false;
             digitalWrite(led_pin, state);
-            CIB_INFO("LED {} = {}!", led_pin, state);
+            // CIB_INFO("LED {} = {}!", led_pin, state);
+            CIB_INFO("LED !");
             state = !state;
         })  //
     );
 };
+}  // namespace

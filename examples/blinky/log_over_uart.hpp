@@ -1,7 +1,13 @@
 #pragma once
-#include <cib/cib.hpp>
-#include <log/catalog/catalog.hpp>
 
+#include <cib/cib.hpp>
+#include <cstdint>
+#include <log/catalog/encoder.hpp>
+#include <log/log.hpp>
+#include <msg/message.hpp>
+#include <stdx/span.hpp>
+
+// Must be the last one.
 #include <Arduino.h>
 
 namespace serial_logger {
@@ -34,6 +40,42 @@ struct config {
         // terminate in some way
     }
 };
+
+namespace defn {
+using msg::at;
+using msg::dword_index_t;
+using msg::field;
+using msg::message;
+using msg::operator""_msb;
+using msg::operator""_lsb;
+
+// Define a message type for the custom binary format.
+// For simplicity, this message is just the 32-bit string ID.
+using id_f = field<"id", std::uint32_t>::located<at{dword_index_t{0}, 31_msb, 0_lsb}>;
+using id_msg_t = message<"id", id_f>;
+}  // namespace defn
+
+// Provide a builder: a structure with a build function that takes
+// various arguments and returns an (owning) message.
+struct builder : logging::mipi::default_builder<> {
+    template <auto Level, logging::packable... Ts>
+    static auto build(string_id, module_id, logging::mipi::unit_t, Ts...) {
+        using namespace msg;
+        return owning<defn::id_msg_t>{"id"_field = 42};
+    }
+};
+
+struct writer {
+    template <std::size_t N>
+    auto operator()(stdx::span<std::uint32_t const, N> packet) const {
+        static_assert(N <= 2);
+
+        for (const auto &c : packet) {
+            Serial.write(static_cast<uint8_t>(c & 0xff));
+        }
+    }
+};
 } // namespace serial_logger
 
-template <> inline auto logging::config<> = serial_logger::config{};
+template <>
+inline auto logging::config<> = logging::binary::config{serial_logger::writer{}};
