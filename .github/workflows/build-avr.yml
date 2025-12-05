@@ -7,7 +7,7 @@ on:
 jobs:
   build:
 
-    runs-on: ubuntu-25.10
+    runs-on: ubuntu-latest
     steps:
     - name: Fetch sources
       uses: actions/checkout@v4
@@ -18,11 +18,25 @@ jobs:
         python-version: 3.12
         cache: pip
 
-    - name: Install avr-gcc toolchain
+    - name: Install native gcc toolchain
       uses: awalsh128/cache-apt-pkgs-action@v1
       with:
-        packages: build-essential avr-gcc
+        packages: build-essential
         version: 1  # bump to invalidate cache
+
+    - name: Cache AVR-GCC toolchain
+      id: avr-cache
+      uses: actions/cache@v3
+      with:
+        path: /opt/avr-gcc
+        key: avr-gcc
+
+    - name: Install AVR-GCC 14.2 from Microchip
+      if: steps.avr-cache.outputs.cache-hit != 'true'
+      run: |
+        wget https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/avr8-gnu-toolchain-4.0.0.52-linux.any.x86_64.tar.gz
+        tar -xzf avr8-gnu-toolchain-4.0.0.52-linux.any.x86_64.tar.gz
+        sudo mv avr8-gnu-toolchain-linux_x86_64 /opt/avr-gcc
 
     - name: Install Python dependencies
       run: |
@@ -44,7 +58,7 @@ jobs:
       run: >-
         meson setup
         --buildtype=release
-        --cross-file=avr-cross-ubuntu2510.ini
+        --cross-file=avr-cross-ubuntu2404.ini
         build-avr/
 
     - name: Build the blinky app with Arduino HAL layer
