@@ -71,23 +71,23 @@ blinky_hex = custom_target('blinky.hex',
     build_by_default: false,
 )
 
-avrdude_exe = find_program('avrdude')
-avrdude_conf = files('/etc/avrdude.conf')
-flash_log = custom_target('flash.log',
-    input: blinky_hex,
-    output: 'flash.log',
-    command: [
-        avrdude_exe, '-q', '-V',
-        '-p', 'atmega328p',
-        '-C', avrdude_conf,
-        '-D', '-c', 'arduino',
-        '-b', '115200',
-        '-P', '/dev/ttyACM0',
-        '-U', 'flash:w:@INPUT@:i',
-    ],
-    capture: true,
-)
+#avrdude_exe = find_program('avrdude')
+#avrdude_conf = files('/etc/avrdude.conf')
+#flash_log = custom_target('flash.log',
+#    input: blinky_hex,
+#    output: 'flash.log',
+#    command: [
+#        avrdude_exe, '-q', '-V',
+#        '-p', 'atmega328p',
+#        '-C', avrdude_conf,
+#        '-D', '-c', 'arduino',
+#        '-b', '115200',
+#        '-P', '/dev/ttyACM0',
+#        '-U', 'flash:w:@INPUT@:i',
+#    ],
+#    capture: true,
+#)
 
 #alias_target('stub', logger_stub_bin)
 alias_target('hex', blinky_hex)
-alias_target('flash', flash_log)
+#alias_target('flash', flash_log)
