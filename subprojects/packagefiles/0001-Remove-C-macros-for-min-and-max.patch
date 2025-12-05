@@ -1,0 +1,25 @@
+From 1d9bb91367e626bc533ed307a9f8f8e7d0df88b2 Mon Sep 17 00:00:00 2001
+From: Antony Chan <antony.sigma@gmail.com>
+Date: Thu, 4 Dec 2025 21:29:40 -0800
+Subject: [PATCH] Remove C-macros for min and max
+
+---
+ cores/arduino/Arduino.h | 2 --
+ 1 file changed, 2 deletions(-)
+
+diff --git a/cores/arduino/Arduino.h b/cores/arduino/Arduino.h
+index 91eeb16..94c2c4a 100644
+--- a/cores/arduino/Arduino.h
++++ b/cores/arduino/Arduino.h
+@@ -89,8 +89,6 @@ void yield(void);
+ #undef abs
+ #endif
+ 
+-#define min(a,b) ((a)<(b)?(a):(b))
+-#define max(a,b) ((a)>(b)?(a):(b))
+-#define abs(x) ((x)>0?(x):-(x))
+ #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
+-#define round(x)     ((x)>=0?(long)((x)+0.5):(long)((x)-0.5))
+-- 
+2.51.0
+

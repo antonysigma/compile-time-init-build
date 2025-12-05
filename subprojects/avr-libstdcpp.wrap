@@ -1,7 +1,7 @@
 [wrap-git]
 directory = avr-libstdcpp
 url = https://github.com/modm-io/avr-libstdcpp.git
-revision = 9d10e0047011f4c1e6ef4dbf76aca5e9a340a6f8
+revision = 5354296040a2289c911062daa82336762231e897
 depth = 1
 patch_directory = avr-libstdcpp
 
