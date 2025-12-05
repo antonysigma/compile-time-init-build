@@ -62,7 +62,7 @@ blinky_hex = custom_target('blinky.hex',
     input: blinky_exe,
     output: 'blinky.hex',
     command: [
-        '/usr/bin/avr-objcopy',
+        meson.get_cross_property('avr_toolchain_bin_path') / 'avr-objcopy',
         '-O', 'ihex',
         '-R', '.eeprom',
         '@INPUT@',

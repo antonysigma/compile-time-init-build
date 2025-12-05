@@ -43,26 +43,26 @@ jobs:
         pip install --upgrade uv
         uv pip install --system meson ninja
 
-    #- name: Cache 3rd party C++ projects
-    #  uses: actions/cache@v3
-    #  with:
-    #    key: meson-cache
-    #    path: subprojects/packagecache/
+    - name: Cache 3rd party C++ projects
+      uses: actions/cache@v3
+      with:
+        key: meson-cache
+        path: subprojects/packagecache/
 
-    #- name: Setup ccache
-    #  uses: hendrikmuhs/ccache-action@v1
-    #  with:
-    #    key: ccache-avr
+    - name: Setup ccache
+      uses: hendrikmuhs/ccache-action@v1
+      with:
+        key: ccache-avr
 
-    #- name: Resolve C++ build dependencies
-    #  run: >-
-    #    meson setup
-    #    --buildtype=release
-    #    --cross-file=avr-cross-ubuntu2404.ini
-    #    build-avr/
+    - name: Resolve C++ build dependencies
+      run: >-
+        meson setup
+        --buildtype=release
+        --cross-file=avr-cross-ubuntu2404.ini
+        build-avr/
 
-    #- name: Build the blinky app with Arduino HAL layer
-    #  run: ninja -C build-avr examples/blinky/blinky
+    - name: Build the blinky app with Arduino HAL layer
+      run: ninja -C build-avr examples/blinky/blinky
 
-    #- name: Build example binary_custom
-    #  run: ninja -C build-avr examples/log/binary_custom/binary_custom
+    - name: Build example binary_custom
+      run: ninja -C build-avr examples/log/binary_custom/binary_custom
