@@ -1,17 +1,17 @@
-From 1d9bb91367e626bc533ed307a9f8f8e7d0df88b2 Mon Sep 17 00:00:00 2001
+From dc18fe4d169bb405ccdb6e5326b135545549011a Mon Sep 17 00:00:00 2001
 From: Antony Chan <antony.sigma@gmail.com>
-Date: Thu, 4 Dec 2025 21:29:40 -0800
-Subject: [PATCH] Remove C-macros for min and max
+Date: Thu, 4 Dec 2025 22:59:44 -0800
+Subject: [PATCH] Remove conflicting Math C-macros
 
 ---
- cores/arduino/Arduino.h | 2 --
- 1 file changed, 2 deletions(-)
+ cores/arduino/Arduino.h | 4 ----
+ 1 file changed, 4 deletions(-)
 
 diff --git a/cores/arduino/Arduino.h b/cores/arduino/Arduino.h
-index 91eeb16..94c2c4a 100644
+index 91eeb16..88f6037 100644
 --- a/cores/arduino/Arduino.h
 +++ b/cores/arduino/Arduino.h
-@@ -89,8 +89,6 @@ void yield(void);
+@@ -89,11 +89,7 @@ void yield(void);
  #undef abs
  #endif
  
@@ -20,6 +20,9 @@ index 91eeb16..94c2c4a 100644
 -#define abs(x) ((x)>0?(x):-(x))
  #define constrain(amt,low,high) ((amt)<(low)?(low):((amt)>(high)?(high):(amt)))
 -#define round(x)     ((x)>=0?(long)((x)+0.5):(long)((x)-0.5))
+ #define radians(deg) ((deg)*DEG_TO_RAD)
+ #define degrees(rad) ((rad)*RAD_TO_DEG)
+ #define sq(x) ((x)*(x))
 -- 
-2.51.0
+2.25.1
 
