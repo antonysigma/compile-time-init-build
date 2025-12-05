@@ -2,6 +2,9 @@ binary_custom_lib = static_library('binary_custom',
     sources: [
         'lib.cpp',
     ],
+    cpp_args: [
+        '-fconcepts-diagnostics-depth=10',
+    ],
     dependencies: [
         cib_dep,
     ],
