@@ -3,10 +3,6 @@ name: Cross compile for Atmel328p
 on:
   workflow_dispatch:
 
-  push:
-    branches-ignore:
-      - logging-writer
-
 jobs:
   build:
 
@@ -55,4 +51,3 @@ jobs:
 
     - name: Build example binary_custom
       run: ninja -C build-avr examples/log/binary_custom/binary_custom
-
