@@ -44,7 +44,7 @@ jobs:
       run: >-
         meson setup
         --buildtype=release
-        --cross-file=avr-cross-archlinux.ini
+        --cross-file=avr-cross-ubuntu2510.ini
         build-avr/
 
     - name: Build the blinky app with Arduino HAL layer
