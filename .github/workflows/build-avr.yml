@@ -1,4 +1,5 @@
 name: Cross compile for Atmel328p
+permissions: read-all
 
 on:
   workflow_dispatch:
