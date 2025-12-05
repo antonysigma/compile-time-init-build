@@ -3,7 +3,6 @@
 // <cmath> should be included before <Arduino.h> to avoid the C-macros abs()
 #include "blink.hpp"
 #include "core.hpp"
-#include "log_over_uart.hpp"
 #include "serial.hpp"
 
 struct registered_interfaces {
@@ -15,7 +14,7 @@ struct registered_interfaces {
 struct project {
     constexpr static auto config =
         cib::components<registered_interfaces, core_init, serial_init,
-                        blink<13>>;
+                        components::blink<13>>;
 };
 
 cib::nexus<project> nexus{};

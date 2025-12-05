@@ -6,7 +6,6 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <iostream>
 
 namespace custom {
 namespace defn {
@@ -40,9 +39,6 @@ struct log_destination {
     template <std::size_t N>
     auto operator()(stdx::span<std::uint32_t const, N> packet) const {
         // write the binary log packet somewhere...
-        std::cout << "Got a binary log packet, string ID: " << packet[0]
-                  << '\n';
-        ;
     }
 };
 } // namespace custom

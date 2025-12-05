@@ -11,45 +11,45 @@ blinky_lib = static_library('blinky',
     ],
 )
 
-#python_exe = find_program('python3')
-#
-#main_sym = custom_target('main.undefined_symbols.txt',
-#    output: 'main.undefined_symbols.txt',
-#    input: [
-#        # There should be just one object file: main.o
-#        blinky_lib,
-#    ],
-#    command: [
-#        'nm',
-#        '-uC',
-#        '@INPUT@'
-#    ],
-#    capture: true,
-#)
-#
-#logger_stub_bin = custom_target('logger_stub.[cpp|xml]',
-#    output: [
-#        'logger_stub.cpp',
-#        'logger_stub.xml',
-#    ],
-#    input: [
-#        # There should be just one object file: main.o
-#        main_sym,
-#    ],
-#    command: [
-#        python_exe,
-#        gen_str_catalog_py,
-#        '--input', '@INPUT0@',
-#        '--cpp_output', '@OUTPUT0@',
-#        '--xml_output', '@OUTPUT1@',
-#    ],
-#    build_by_default: true,
-#)
+python_exe = find_program('python3')
+
+main_sym = custom_target('main.undefined_symbols.txt',
+    output: 'main.undefined_symbols.txt',
+    input: [
+        # There should be just one object file: main.o
+        blinky_lib,
+    ],
+    command: [
+        'nm',
+        '-uC',
+        '@INPUT@'
+    ],
+    capture: true,
+)
+
+logger_stub_bin = custom_target('logger_stub.[cpp|xml]',
+    output: [
+        'logger_stub.cpp',
+        'logger_stub.xml',
+    ],
+    input: [
+        # There should be just one object file: main.o
+        main_sym,
+    ],
+    command: [
+        python_exe,
+        gen_str_catalog_py,
+        '--input', '@INPUT0@',
+        '--cpp_output', '@OUTPUT0@',
+        '--xml_output', '@OUTPUT1@',
+    ],
+    build_by_default: true,
+)
 
 blinky_exe = executable('blinky',
-  #sources: [
-  #      logger_stub_bin[0],
-  #  ],
+    sources: [
+        logger_stub_bin[0],
+    ],
     link_with: blinky_lib,
     dependencies: [
         cib_dep,

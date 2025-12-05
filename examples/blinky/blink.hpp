@@ -15,8 +15,12 @@ Max(const T a, const T b) {
     return a >= b ? a : b;
 }
 
-namespace {
+namespace components {
+
+#ifndef BLINKY_LEGACY_BINARY_LOGGER
 CIB_LOG_ENV(logging::binary::get_builder, serial_logger::builder{});
+#endif
+
 template <uint8_t led_pin> struct blink {
     static inline bool volatile is_interrupted = false;
 
@@ -30,7 +34,7 @@ template <uint8_t led_pin> struct blink {
                 blink_interval_ms / timer_interrupt_internal_ms;
             static uint8_t step = 0;
             static_assert(std::log2(duration_steps) <= sizeof(step) * 8,
-                          "Need more than bits to implement delay()");
+                          "Need more ticks to implement delay()");
             static_assert(std::log2(duration_steps) >
                               Max(0, int(sizeof(step)) - 1) * 8,
                           "Wasteful compute");
@@ -48,11 +52,11 @@ template <uint8_t led_pin> struct blink {
             }
 
             is_interrupted = false;
+            CIB_INFO("Writing to GPIO...");
             digitalWrite(led_pin, state);
-            // CIB_INFO("LED {} = {}!", led_pin, state);
-            CIB_INFO("LED !");
+            CIB_INFO("LED {} = {}!", led_pin, state);
             state = !state;
         })  //
     );
 };
-}  // namespace
+}

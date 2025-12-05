@@ -36,3 +36,4 @@ cib_dep = declare_dependency(
 subdir('tools')
 subdir('examples/hello_world')
 subdir('examples/blinky')
+subdir('examples/log/binary_custom')

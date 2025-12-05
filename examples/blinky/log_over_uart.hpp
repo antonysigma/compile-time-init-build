@@ -10,7 +10,10 @@
 // Must be the last one.
 #include <Arduino.h>
 
+#define BLINKY_LEGACY_BINARY_LOGGER
+
 namespace serial_logger {
+
 struct config {
     struct {
     template <typename Env, typename FilenameStringType,
@@ -40,6 +43,7 @@ struct config {
         // terminate in some way
     }
 };
+
 
 namespace defn {
 using msg::at;
@@ -75,7 +79,13 @@ struct writer {
         }
     }
 };
+
 } // namespace serial_logger
 
+#ifdef BLINKY_LEGACY_BINARY_LOGGER
+template <>
+inline auto logging::config<> = serial_logger::config{};
+#else
 template <>
 inline auto logging::config<> = logging::binary::config{serial_logger::writer{}};
+#endif
