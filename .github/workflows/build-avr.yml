@@ -41,7 +41,7 @@ jobs:
     - name: Install Python dependencies
       run: |
         pip install --upgrade uv
-        uv pip install --system meson ninja
+        uv pip install --system meson ninja parsimonious
 
     - name: Cache 3rd party C++ projects
       uses: actions/cache@v3
