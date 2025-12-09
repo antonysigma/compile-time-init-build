@@ -1,0 +1,3 @@
+option('flash_arduino', type: 'boolean', value: false,
+    description: 'Flash Arduino UNO with avrdude',
+)

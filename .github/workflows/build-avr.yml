@@ -1,4 +1,4 @@
-name: Cross compile for Atmel328p
+name: Cross compile for Atmega328p
 permissions: read-all
 
 on:

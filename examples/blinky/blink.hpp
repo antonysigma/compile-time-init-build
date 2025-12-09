@@ -8,13 +8,6 @@
 #include "interfaces.hpp"
 #include "log_over_uart.hpp"
 
-/** Hand roll our own std::max to bypass the C-macro max() from Arduino.h */
-template<typename T>
-constexpr T
-Max(const T a, const T b) {
-    return a >= b ? a : b;
-}
-
 namespace components {
 
 #ifndef BLINKY_LEGACY_BINARY_LOGGER
@@ -34,9 +27,9 @@ template <uint8_t led_pin> struct blink {
                 blink_interval_ms / timer_interrupt_internal_ms;
             static uint8_t step = 0;
             static_assert(std::log2(duration_steps) <= sizeof(step) * 8,
-                          "Need more ticks to implement delay()");
+                          "Integer 'bit' needs more bits to implement delay()");
             static_assert(std::log2(duration_steps) >
-                              Max(0, int(sizeof(step)) - 1) * 8,
+                              std::max(0, int(sizeof(step)) - 1) * 8,
                           "Wasteful compute");
             if (++step < duration_steps) {
                 return;
