@@ -20,13 +20,11 @@ struct config {
               typename LineNumberType, typename FmtResult>
     void log(FilenameStringType f, LineNumberType n, FmtResult const &fr)
         {
-            //using Message = message<Level, MsgType>;
-            //uint32_t const msg_id = catalog<Message>();
-            const uint32_t msg_id = 0;
+            using MyString = decltype(logging::binary::detail::to_message<decltype(fr.str), -1>());
+            const auto msg_id = catalog<MyString>();
 
-            // Assume number of messages < 256.
+            // Assuming number of unique log string is <= 256.
             Serial.write(static_cast<uint8_t>(msg_id & 0xff));
-
             fr.args.apply([](auto... args) { logArgs(args...); });
         }
 
