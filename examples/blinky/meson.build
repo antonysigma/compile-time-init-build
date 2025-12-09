@@ -27,10 +27,10 @@ main_sym = custom_target('main.undefined_symbols.txt',
     capture: true,
 )
 
-logger_stub_bin = custom_target('logger_stub.[cpp|xml]',
+logger_stub_bin = custom_target('logger_stub.[cpp|go]',
     output: [
         'logger_stub.cpp',
-        'logger_stub.xml',
+        'serial_monitor.go',
     ],
     input: [
         # There should be just one object file: main.o
@@ -39,9 +39,9 @@ logger_stub_bin = custom_target('logger_stub.[cpp|xml]',
     command: [
         python_exe,
         gen_str_catalog_py,
-        '--input', '@INPUT0@',
-        '--cpp_output', '@OUTPUT0@',
-        '--xml_output', '@OUTPUT1@',
+        '-i@INPUT0@',
+        '-c@OUTPUT0@',
+        '-m@OUTPUT1@',
     ],
     build_by_default: true,
 )
@@ -50,7 +50,12 @@ blinky_exe = executable('blinky',
     sources: [
         logger_stub_bin[0],
     ],
-    link_with: blinky_lib,
+    objects: blinky_lib.extract_all_objects(),
+    link_args: [
+      '-Wl,--gc-sections',
+      '-Wl,--no-undefined',
+      '-Wl,-e,main',
+    ],
     dependencies: [
         cib_dep,
         # avr-ar does not support fat object files, why?
