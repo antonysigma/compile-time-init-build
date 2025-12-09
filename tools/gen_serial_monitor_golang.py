@@ -17,7 +17,7 @@ sc_message = "sc::message<" sc_undefined ws closing_bracket
 sc_undefined = "sc::undefined<" string_format_arguments undefined_string_id string_constant closing_bracket
 
 string_format_arguments = "sc::args<" c_integral_types? (delimiter c_integral_types)* closing_bracket
-string_constant = ", char" char_array 
+string_constant = ", char" char_array
 char_array = (delimiter char_keyword ascii_code)+
 
 logging_level = "(logging::level)" digits delimiter
@@ -103,7 +103,7 @@ class CIBLogging(NodeVisitor):
     def visit_logging_level(self, node, _) -> int:
         return int(node.children[1].text)
 
-    def visit_char_array(self, _, visited_children) -> bytes:
+    def visit_char_array(self, _, visited_children) -> bytearray:
         ascii_array: list[int] = [ascii_code for _, _, ascii_code in visited_children]
         return bytearray(ascii_array)
 
@@ -138,7 +138,9 @@ var message = map[byte]FormatMapping {
         printf_string = re.sub(r"{:(.*?)}", r"%\1", printf_string)
         file.write(f'\t{m.id:#02x}: {{"{printf_string:s}", {len(m.arg_types):d}}},\n')
 
-    max_args = 0 if len(message_table) == 0 else max((len(m.arg_types) for m in message_table))
+    max_args = max((len(m.arg_types) for m in message_table))
+    max_args = max(2, max_args)
+    assert max_args >= 2
 
     file.write(
         r"""}
@@ -243,11 +245,11 @@ def parseArgs() -> InputOutputFiles:
 
 
 if __name__ == "__main__":
-    assert grammar['log_symbol'].parse(
-         'unsigned long catalog<'
-        'sc::message<'
-        'sc::undefined<'
-            'sc::args<>, -1, char, (char)76, (char)69, (char)68, (char)32, (char)49, (char)51, (char)32, (char)61, (char)32, (char)123, (char)125, (char)33> > >()'
+    assert grammar["log_symbol"].parse(
+        "unsigned long catalog<"
+        "sc::message<"
+        "sc::undefined<"
+        "sc::args<>, -1, char, (char)76, (char)69, (char)68, (char)32, (char)49, (char)51, (char)32, (char)61, (char)32, (char)123, (char)125, (char)33> > >()"
     )
     files = parseArgs()
 
