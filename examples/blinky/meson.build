@@ -50,7 +50,7 @@ blinky_exe = executable('blinky',
     sources: [
         logger_stub_bin[0],
     ],
-    objects: blinky_lib.extract_all_objects(),
+    objects: blinky_lib.extract_all_objects(recursive:false),
     link_args: [
       '-Wl,--gc-sections',
       '-Wl,--no-undefined',
@@ -67,7 +67,7 @@ blinky_hex = custom_target('blinky.hex',
     input: blinky_exe,
     output: 'blinky.hex',
     command: [
-        meson.get_cross_property('avr_toolchain_bin_path') / 'avr-objcopy',
+        meson.get_external_property('avr_toolchain_bin_path') / 'avr-objcopy',
         '-O', 'ihex',
         '-R', '.eeprom',
         '@INPUT@',

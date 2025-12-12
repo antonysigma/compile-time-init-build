@@ -47,6 +47,9 @@ template <uint8_t led_pin> struct blink {
             is_interrupted = false;
             CIB_INFO("Writing to GPIO...");
             digitalWrite(led_pin, state);
+
+            // This should compile into
+            // Serial.write(char(1));Serial.write(state);
             CIB_INFO("LED {} = {}!", led_pin, state);
             state = !state;
         })  //
