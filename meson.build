@@ -1,7 +1,8 @@
 project('cib', 'cpp',
     default_options: [
         'cpp_std=c++20',
-    ]
+    ],
+    meson_version: '>= 1.6.0',
 )
 
 stdx_dep = subproject('stdx').get_variable('stdx_dep')
@@ -12,7 +13,7 @@ if meson.is_cross_build()
 else
     avr_stdcpp_dep = []
     fmt_dep = declare_dependency(
-    compile_args: 
+    compile_args:
             # Eliminates include <locale>
             '-DFMT_STATIC_THOUSANDS_SEPARATOR',
     dependencies: subproject('fmt').get_variable('fmt_header_only_dep'),
