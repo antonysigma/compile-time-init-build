@@ -1,8 +1,9 @@
-[wrap-git]
-directory = cpp-std-extensions
-url = https://github.com/intel/cpp-std-extensions.git
-revision = 4d468edbae3fe8a5c2c113e80411b3f92a73162d
-depth = 1
+[wrap-file]
+directory = cpp-std-extensions-4d468edbae3fe8a5c2c113e80411b3f92a73162d
+source_url = https://github.com/intel/cpp-std-extensions/archive/4d468edbae3fe8a5c2c113e80411b3f92a73162d.tar.gz
+source_filename = cpp-std-extensions-4d468edbae3fe8a5c2c113e80411b3f92a73162d.tar.gz
+source_hash = 8108125734cf5ccedd13502d289317b6e6fb2d6b3482a507f9801d4a35347f01
+
 patch_directory = stdx
 diff_files = stdx/relax-tuple-concepts.patch
 

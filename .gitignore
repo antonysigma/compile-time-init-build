@@ -27,3 +27,4 @@
 
 # Meson build's 3rd party libraries
 subprojects/*/
+subprojects/.wraplock

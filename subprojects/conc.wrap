@@ -1,9 +1,9 @@
-[wrap-git]
-directory = cpp-baremetal-concurrency
-url = https://github.com/intel/cpp-baremetal-concurrency.git
-revision = fd756b8cb2d6a098509eeed8bde1fe3459a108a0
-depth = 1
+[wrap-file]
+directory = cpp-baremetal-concurrency-fd756b8cb2d6a098509eeed8bde1fe3459a108a0
+source_url = https://github.com/intel/cpp-baremetal-concurrency/archive/fd756b8cb2d6a098509eeed8bde1fe3459a108a0.tar.gz
+source_filename = cpp-baremetal-concurrency-fd756b8cb2d6a098509eeed8bde1fe3459a108a0.tar.gz
 patch_directory = conc
+source_hash = c451f838c8ddb032fa00a0c8a78d0a88204dd5a93c9011caa084f4060dd4796c
 
 [provide]
 conc = conc_dep

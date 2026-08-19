@@ -1,10 +1,9 @@
-[wrap-git]
-directory = avr-libstdcpp
-url = https://github.com/modm-io/avr-libstdcpp.git
-revision = 5354296040a2289c911062daa82336762231e897
-depth = 1
+[wrap-file]
+directory = avr-libstdcpp-5354296040a2289c911062daa82336762231e897
+source_url = https://github.com/modm-io/avr-libstdcpp/archive/5354296040a2289c911062daa82336762231e897.tar.gz
+source_filename = avr-libstdcpp-5354296040a2289c911062daa82336762231e897.tar.gz
 patch_directory = avr-libstdcpp
+source_hash = 1cb07419f2e2460ff7de0732ad56e52b814e2016f0d6e4e358d8c61c860e667d
 
 [provide]
 avr_stdcpp = avr_stdcpp_dep
-
