@@ -11,8 +11,6 @@ blinky_lib = static_library('blinky',
     ],
 )
 
-python_exe = find_program('python3')
-
 main_sym = custom_target('main.undefined_symbols.txt',
     output: 'main.undefined_symbols.txt',
     input: [

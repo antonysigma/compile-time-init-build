@@ -75,8 +75,8 @@ template <writer_like Writer> struct log_handler {
         fr.args.apply([&]<typename... Args>(Args &&...args) {
             constexpr auto L = stdx::to_underlying(get_level(Env{}));
             using Message = typename decltype(builder)::template convert_args<
-                detail::to_message_t<decltype(fr.str), logging::get_string_id(
-                                                           Env{})>::template fn,
+                detail::to_message_t<decltype(fr.str),
+                                     logging::get_string_id(Env{})>,
                 std::remove_cvref_t<Args>...>;
             using Module =
                 decltype(detail::to_module<get_module(Env{}),

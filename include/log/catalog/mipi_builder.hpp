@@ -140,7 +140,8 @@ template <packer P = logging::default_arg_packer> struct default_builder {
         }
     }
 
-    template <template <typename...> typename F, typename... Args>
-    using convert_args = F<typename P::template encode_as_t<Args>...>;
+    template <typename F, typename... Args>
+    using convert_args =
+        typename F::template fn<typename P::template encode_as_t<Args>...>;
 };
 } // namespace logging::mipi

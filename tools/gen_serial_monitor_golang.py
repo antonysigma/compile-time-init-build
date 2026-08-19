@@ -190,6 +190,17 @@ def defineMissingSymbols(file: TextIO, messages: list[LogMessage]) -> None:
 #include <log/log.hpp>
 """)
 
+    file.write(
+        """
+template<> unsigned long module<sc::module_string<
+    sc::undefined<void, -1, char, (char)100, (char)101, (char)102, (char)97,
+                  (char)117, (char)108, (char)116>>>()
+{
+    return 0;
+}
+"""
+    )
+
     for m in messages:
         file.write(f"""
 /** {m.msg.decode("utf-8")} */

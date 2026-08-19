@@ -10,8 +10,6 @@ binary_custom_lib = static_library('binary_custom',
     ],
 )
 
-python_exe = find_program('python3')
-
 binary_custom_main_sym = custom_target('main.undefined_symbols.txt',
     output: 'main.undefined_symbols.txt',
     input: [
@@ -26,21 +24,21 @@ binary_custom_main_sym = custom_target('main.undefined_symbols.txt',
     capture: true,
 )
 
-binary_custom_logger_stub_bin = custom_target('logger_stub.[cpp|xml]',
+binary_custom_logger_stub_bin = custom_target('logger_stub.[cpp|go]',
     output: [
         'logger_stub.cpp',
-        'logger_stub.xml',
+        'serial_monitor.go',
     ],
     input: [
-        # There should be just one object file: main.o
+        # There should be just one object file: lib.o
         binary_custom_main_sym,
     ],
     command: [
         python_exe,
         gen_str_catalog_py,
-        '--input', '@INPUT0@',
-        '--cpp_output', '@OUTPUT0@',
-        '--xml_output', '@OUTPUT1@',
+        '-i@INPUT0@',
+        '-c@OUTPUT0@',
+        '-m@OUTPUT1@',
     ],
     build_by_default: true,
 )
@@ -55,4 +53,3 @@ binary_custom_exe = executable('binary_custom',
         cib_dep,
     ],
 )
-
